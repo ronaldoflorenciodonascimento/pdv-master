@@ -8,4 +8,8 @@ export abstract class BaseController {
       return { success: false, error: { code: error instanceof Error ? error.name : 'UNKNOWN_ERROR', message: error instanceof Error ? error.message : 'Erro inesperado.' } };
     }
   }
+  protected async executeAsync<T>(operation: () => Promise<T>): Promise<ControllerResponse<T>> {
+    try { return { success: true, data: await operation() }; }
+    catch (error) { return { success: false, error: { code: error instanceof Error ? error.name : 'UNKNOWN_ERROR', message: error instanceof Error ? error.message : 'Erro inesperado.' } }; }
+  }
 }

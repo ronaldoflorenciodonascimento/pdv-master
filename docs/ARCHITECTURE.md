@@ -13,6 +13,7 @@ Renderer → Preload/contextBridge → IPCManager → Controller → Service →
 - **IPCManager:** registra canais, evita handlers duplicados e concentra falhas de comunicação entre processos.
 - **Controller:** padroniza respostas `{ success, data, error }`, sem expor detalhes internos ao renderer.
 - **Service:** orquestra repositórios; `BaseService` fornece operações reutilizáveis sem regras de módulo.
+- **AuthService:** mantém a sessão exclusivamente no processo main e orquestra hash, login, logout e troca de senha.
 - **Repository:** encapsula SQL. `BaseRepository` fornece CRUD parametrizado e os específicos concentram consultas por entidade.
 - **DatabaseManager:** singleton da conexão `better-sqlite3`, com WAL, FKs, timeout, queries preparadas e ciclo de vida.
 - **TransactionManager:** executa `BEGIN IMMEDIATE`, `COMMIT` e `ROLLBACK`; operações aninhadas usam savepoints.

@@ -20,10 +20,10 @@ function createWindow(): void {
   else mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   electronApp.setAppUserModelId('com.pdvmaster.app');
   app.on('browser-window-created', (_, window) => optimizer.watchWindowShortcuts(window));
-  appController.initialize(app.getPath('userData'), join(app.getAppPath(), 'database', 'migrations'));
+  await appController.initialize(app.getPath('userData'), join(app.getAppPath(), 'database', 'migrations'));
   registerIpcHandlers(ipcMain);
   createWindow();
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

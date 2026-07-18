@@ -52,3 +52,12 @@ tests/             # Testes automatizados
 ```
 
 Na primeira execução, o banco é criado automaticamente em `userData/pdv-master.sqlite`, com WAL e chaves estrangeiras habilitados.
+
+## Primeiro acesso
+
+Somente quando não existir nenhum usuário, o processo main cria o administrador inicial:
+
+- E-mail: `admin@pdvmaster.local`
+- Senha temporária: `PDVMaster!2026`
+
+A troca da senha é obrigatória no primeiro login. Essas credenciais não são distribuídas ao renderer e devem ser alteradas imediatamente.

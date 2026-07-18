@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DatabaseManager } from '../../src/main/database/DatabaseManager';
 import { MigrationRunner } from '../../src/main/database/MigrationRunner';
+import { AuthService } from '../../src/main/services/AuthService';
 
 const temporaryPaths: string[] = [];
 const databaseManager = DatabaseManager.getInstance();
@@ -42,16 +43,41 @@ function testDatabaseManager(): void {
   databaseManager.close();
 }
 
-let exitCode = 0;
-try {
-  testMigrationRunner();
-  testDatabaseManager();
-  console.info('Integração SQLite no runtime Electron: aprovada.');
-} catch (error) {
+async function testAuthentication(): Promise<void> {
+  const root = mkdtempSync(join(tmpdir(), 'pdv-auth-test-'));
+  temporaryPaths.push(root);
+  databaseManager.initialize(root, join(process.cwd(), 'database', 'migrations'));
+  const auth = AuthService.getInstance();
+  await auth.ensureInitialAdministrator();
+  await assert.rejects(() => auth.login({ email: 'nobody@pdvmaster.local', password: 'qualquer-senha' }));
+  await assert.rejects(() => auth.login({ email: 'admin@pdvmaster.local', password: 'senha-incorreta' }));
+  const initial = await auth.login({ email: 'admin@pdvmaster.local', password: 'PDVMaster!2026' });
+  assert.equal(initial.mustChangePassword, true);
+  const changed = await auth.changePassword({ currentPassword: 'PDVMaster!2026', newPassword: 'NovaSenha!2026' });
+  assert.equal(changed.mustChangePassword, false);
+  assert.ok(auth.currentSession());
+  auth.logout();
+  assert.equal(auth.currentSession(), null);
+  await auth.login({ email: 'admin@pdvmaster.local', password: 'NovaSenha!2026' });
+  databaseManager.execute('UPDATE users SET active = 0 WHERE email = ?', ['admin@pdvmaster.local']);
+  auth.logout();
+  await assert.rejects(() => auth.login({ email: 'admin@pdvmaster.local', password: 'NovaSenha!2026' }));
   databaseManager.close();
-  console.error('Integração SQLite no runtime Electron: falhou.', error);
-  exitCode = 1;
-} finally {
-  temporaryPaths.forEach((path) => rmSync(path, { recursive: true, force: true }));
 }
-process.exit(exitCode);
+
+void (async () => {
+  let exitCode = 0;
+  try {
+    testMigrationRunner();
+    testDatabaseManager();
+    await testAuthentication();
+    console.info('Integração SQLite no runtime Electron: aprovada.');
+  } catch (error) {
+    databaseManager.close();
+    console.error('Integração SQLite no runtime Electron: falhou.', error);
+    exitCode = 1;
+  } finally {
+    temporaryPaths.forEach((path) => rmSync(path, { recursive: true, force: true }));
+  }
+  process.exit(exitCode);
+})();

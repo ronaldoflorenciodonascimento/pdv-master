@@ -28,7 +28,7 @@
     "win": { "target": ["nsis"] },
     "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
   },
-  "dependencies": { "better-sqlite3": "^11.8.1", "winston": "^3.17.0" },
+  "dependencies": { "bcryptjs": "^2.4.3", "better-sqlite3": "^11.8.1", "winston": "^3.17.0" },
   "devDependencies": {
     "@electron-toolkit/utils": "^3.0.0",
     "@electron/rebuild": "^4.2.0",
