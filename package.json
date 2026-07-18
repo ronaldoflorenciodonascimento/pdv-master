@@ -1,0 +1,50 @@
+{
+  "name": "pdv-master",
+  "version": "0.1.0",
+  "description": "PDV Master - ERP desktop para pequenas empresas",
+  "main": "out/main/index.js",
+  "author": "PDV Master",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npm run rebuild:electron && electron-vite dev",
+    "build": "npm run rebuild:electron && npm run build:app",
+    "build:app": "electron-vite build",
+    "dist": "npm run build && electron-builder",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run test:electron",
+    "test:electron": "npm run rebuild:electron && npm run build:app && electron out/main/integration-tests.js",
+    "test:node": "node scripts/run-node-tests.mjs",
+    "rebuild:node": "npm rebuild better-sqlite3",
+    "rebuild:electron": "electron-rebuild --force --only better-sqlite3",
+    "validate": "npm run test && npm run lint && npm run build"
+  },
+  "build": {
+    "appId": "com.pdvmaster.app",
+    "productName": "PDV Master",
+    "directories": { "buildResources": "assets", "output": "installer" },
+    "files": ["out/**/*", "database/migrations/**/*", "package.json"],
+    "win": { "target": ["nsis"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+  },
+  "dependencies": { "better-sqlite3": "^11.8.1", "winston": "^3.17.0" },
+  "devDependencies": {
+    "@electron-toolkit/utils": "^3.0.0",
+    "@electron/rebuild": "^4.2.0",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  }
+}
