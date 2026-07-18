@@ -1,0 +1,2 @@
+export interface CategoryDto { id:number; uuid:string; name:string; description:string|null; defaultMarginPercentage:number; active:boolean; }
+export interface ProductDto { id:number; uuid:string; categoryId:number|null; name:string; description:string|null; sku:string; barcode:string|null; unit:string; costPriceCents:number; salePriceCents:number; marginPercentage:number; currentStockMilli:number; minimumStockMilli:number; active:boolean; categoryName?:string|null; }

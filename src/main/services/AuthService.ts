@@ -45,7 +45,7 @@ export class AuthService {
   currentSession(): AuthenticatedUserDto | null { return this.session ? this.toDto(this.session) : null; }
 
   async changePassword(input: ChangePasswordDto): Promise<AuthenticatedUserDto> {
-    const session = this.requireSession();
+    const session = this.requireAuthenticated();
     const { currentPassword, newPassword } = validatePasswordChange(input);
     const user = this.repository.findById(session.id);
     if (!user || !user.active) { this.logout(); throw new AuthError('Sessão inválida.'); }
@@ -56,7 +56,7 @@ export class AuthService {
     return this.toDto(this.session);
   }
 
-  private requireSession(): AuthSession { if (!this.session) throw new AuthError('Autenticação necessária.', 'UNAUTHENTICATED'); return this.session; }
+  requireAuthenticated(): AuthSession { if (!this.session) throw new AuthError('Autenticação necessária.', 'UNAUTHENTICATED'); return this.session; }
   private toSession(user: AuthUserRecord): AuthSession { return { ...this.toDto(user), createdAt: new Date().toISOString() }; }
   private toDto(user: AuthUserRecord | AuthSession): AuthenticatedUserDto {
     const databaseUser = 'company_id' in user;

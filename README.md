@@ -61,3 +61,11 @@ Somente quando não existir nenhum usuário, o processo main cria o administrado
 - Senha temporária: `PDVMaster!2026`
 
 A troca da senha é obrigatória no primeiro login. Essas credenciais não são distribuídas ao renderer e devem ser alteradas imediatamente.
+
+## Configuração da empresa
+
+Após autenticar, abra **Configurações → Dados da empresa** para salvar identificação, contato, endereço e preferências de moeda/fuso/backup. Documento, CEP e telefone são normalizados automaticamente. Consulte `docs/COMPANY_CONFIGURATION.md` para detalhes.
+
+## Cadastros
+
+Categorias e Produtos possuem APIs IPC autenticadas e persistência SQLite. Consulte `docs/CATEGORIES.md` e `docs/PRODUCTS.md`.
